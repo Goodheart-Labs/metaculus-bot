@@ -74,8 +74,8 @@ async def benchmark_forecast_bot(mode: str) -> None:
             #     predictions_per_research_report=5
             # ),
             P_RM_NathanV1_Bot(
-                llms={"default": GeneralLlm(model="openrouter/openai/gpt-4o-mini", temperature=0.2), "summarizer": GeneralLlm(
-                    model="openrouter/openai/gpt-4o-mini", temperature=0.2)},
+                llms={"default": GeneralLlm(model="gpt-4o-mini", temperature=0.2), "summarizer": GeneralLlm(
+                    model="gpt-4o-mini", temperature=0.2)},
                 predictions_per_research_report=5
             ),
         ]
