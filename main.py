@@ -22,7 +22,7 @@ from forecasting_tools import (
     SmartSearcher,
     clean_indents,
 )
-from bots import P_RM_NathanV1_Bot, PerplexityRelatedMarketsBot
+from bots import PerplexityRelatedMarketsScenarioBot
 
 logger = logging.getLogger(__name__)
 
@@ -377,10 +377,10 @@ if __name__ == "__main__":
         "test_questions",
     ], "Invalid run mode"
 
-    bot = P_RM_NathanV1_Bot(
+    bot = PerplexityRelatedMarketsScenarioBot(
         llms={
-            "default": GeneralLlm(model="openrouter/openai/gpt-4o-mini", temperature=0.2),
-            "summarizer": GeneralLlm(model="openrouter/openai/gpt-4o-mini", temperature=0.2)
+            "default": GeneralLlm(model="o3", temperature=0.2),
+            "summarizer": GeneralLlm(model="o3", temperature=0.2)
         },
         predictions_per_research_report=5
     )
