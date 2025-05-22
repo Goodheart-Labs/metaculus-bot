@@ -412,7 +412,7 @@ if __name__ == "__main__":
         forecast_reports = asyncio.run(
             bot.forecast_questions(questions, return_exceptions=True)
         )
-    summary = PerplexityRelatedMarketsBot.log_report_summary(
+    summary = PerplexityRelatedMarketsScenarioBot.log_report_summary(
         forecast_reports)  # type: ignore
 
     if args.slack_notify:
