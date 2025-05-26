@@ -1,0 +1,74 @@
+from fastapi import FastAPI, HTTPException, Request, Header
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+import asyncio
+import os
+from forecasting_tools import BinaryQuestion, GeneralLlm
+from bots import PerplexityRelatedMarketsScenarioBot
+
+API_KEY = os.getenv("API_SERVER_KEY", "changeme")
+
+app = FastAPI()
+
+# Allow all origins for development; restrict in prod
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
+class ForecastRequest(BaseModel):
+    question: str
+    resolution_criteria: str = ""
+    fine_print: str | None = None
+    background_info: str | None = None
+
+
+@app.get("/health")
+def health():
+    return {"status": "ok"}
+
+
+@app.post("/forecast-binary")
+async def forecast_binary(
+    req: ForecastRequest,
+    authorization: str = Header(None)
+):
+    if not authorization or not authorization.startswith("Bearer "):
+        raise HTTPException(
+            status_code=401, detail="Missing or invalid Authorization header")
+    token = authorization.split(" ", 1)[1]
+    if token != API_KEY:
+        raise HTTPException(status_code=403, detail="Invalid API key")
+
+    user_question = BinaryQuestion(
+        question_text=req.question,
+        resolution_criteria=req.resolution_criteria,
+        fine_print=req.fine_print,
+        background_info=req.background_info,
+        id_of_post=-1,
+        page_url="api://user-question"
+    )
+    bot = PerplexityRelatedMarketsScenarioBot(
+        llms={
+            "default": GeneralLlm(model="o3", temperature=0.2),
+            "summarizer": GeneralLlm(model="o3", temperature=0.2)
+        },
+        predictions_per_research_report=5,
+        publish_reports_to_metaculus=False
+    )
+    try:
+        forecast_reports = await bot.forecast_questions([user_question], return_exceptions=True)
+        # Just return the first report for now
+        report = forecast_reports[0]
+        # Try to extract main fields
+        return {
+            "prediction": getattr(report, "prediction_value", None),
+            "reasoning": getattr(report, "reasoning", None),
+            "raw": str(report)
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
