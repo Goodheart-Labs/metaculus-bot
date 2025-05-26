@@ -22,7 +22,8 @@ from forecasting_tools import (
     SmartSearcher,
     clean_indents,
 )
-from current_best_bot import get_best_bot
+from current_best_bot import get_best_bot, log_report_summary
+from bots import PerplexityRelatedMarketsScenarioBot
 
 logger = logging.getLogger(__name__)
 
@@ -406,8 +407,7 @@ if __name__ == "__main__":
         forecast_reports = asyncio.run(
             bot.forecast_questions(questions, return_exceptions=True)
         )
-    summary = PerplexityRelatedMarketsScenarioBot.log_report_summary(
-        forecast_reports)  # type: ignore
+    summary = log_report_summary(forecast_reports)  # type: ignore
 
     if args.slack_notify:
         webhook_url = os.getenv("SLACK_WEBHOOK_URL")

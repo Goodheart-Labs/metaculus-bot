@@ -16,3 +16,10 @@ def get_best_bot(publish_reports_to_metaculus: bool = False):
         predictions_per_research_report=5,
         publish_reports_to_metaculus=publish_reports_to_metaculus
     )
+
+
+def log_report_summary(forecast_reports):
+    """
+    Returns a summary string for a list of forecast reports, using the current best bot's summary logic.
+    """
+    return PerplexityRelatedMarketsScenarioBot.log_report_summary(forecast_reports)
