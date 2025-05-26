@@ -21,7 +21,9 @@ from forecasting_tools import (
 from bots import (
     P_RM_NathanV1_Bot,
     PerplexityFilteredRelatedMarketsScenarioPerplexityBot,
+    PerplexityRelatedMarketsScenarioBot,
 )
+from current_best_bot import get_best_bot
 
 logger = logging.getLogger(__name__)
 
@@ -61,6 +63,12 @@ async def benchmark_forecast_bot(mode: str) -> None:
 
     with MonetaryCostManager() as cost_manager:
         bots = [
+            PerplexityRelatedMarketsScenarioBot(
+                llms={"default": GeneralLlm(model="openrouter/openai/gpt-4o-mini", temperature=0.2), "summarizer": GeneralLlm(
+                    model="openrouter/openai/gpt-4o-mini", temperature=0.2)},
+                predictions_per_research_report=5,
+                publish_reports_to_metaculus=False
+            ),
             PerplexityFilteredRelatedMarketsScenarioPerplexityBot(
                 llms={"default": GeneralLlm(model="openrouter/openai/gpt-4o-mini", temperature=0.2), "summarizer": GeneralLlm(
                     model="openrouter/openai/gpt-4o-mini", temperature=0.2)},
