@@ -1239,9 +1239,13 @@ class FermiWithSearchControl(ForecastBot):
 
 class PerplexityRelatedMarketsScenarioBot(ForecastBot):
     name = "perplexity-scenario"
-    
-    def __init__(self, llms: dict[str, GeneralLlm], predictions_per_research_report=1):
-        super().__init__(llms=llms, predictions_per_research_report=predictions_per_research_report)
+
+    def __init__(self, llms: dict[str, GeneralLlm], predictions_per_research_report=1, publish_reports_to_metaculus=False):
+        super().__init__(
+            llms=llms,
+            predictions_per_research_report=predictions_per_research_report,
+            publish_reports_to_metaculus=publish_reports_to_metaculus
+        )
 
     async def run_research(self, question):
         # Use Perplexity via OpenRouter (sonar-reasoning) for web research
@@ -1383,7 +1387,7 @@ class PerplexityRelatedMarketsScenarioBot(ForecastBot):
 
 class PerplexityFilteredRelatedMarketsScenarioBot(ForecastBot):
     name = "perplexity-scenario-filtered"
-    
+
     def __init__(self, llms: dict[str, GeneralLlm], predictions_per_research_report=1):
         super().__init__(llms=llms, predictions_per_research_report=predictions_per_research_report)
         # Use Claude Sonnet through OpenRouter for lightweight tasks
@@ -1396,7 +1400,7 @@ class PerplexityFilteredRelatedMarketsScenarioBot(ForecastBot):
         """
         # Get market name using the same logic as in run_research
         name = market.get("name", market.get("question", "Unnamed Market"))
-        
+
         prompt = clean_indents(
             f"""
             You are evaluating how relevant a prediction market is to a forecasting question.
@@ -1443,7 +1447,7 @@ class PerplexityFilteredRelatedMarketsScenarioBot(ForecastBot):
     async def run_research(self, question):
         # Get raw market data
         markets = get_related_markets_raw(question.question_text)
-        
+
         # Score each market's relevance
         scored_markets = []
         filtered_markets = []
@@ -1459,25 +1463,27 @@ class PerplexityFilteredRelatedMarketsScenarioBot(ForecastBot):
             print(f"Reasoning:\n{reasoning}")
             print(f"Final score: {score}")
             print("-" * 80)
-            
-            if score >= 4:  # Only include markets with relevance score >= 4 (useful information or better)
+
+            # Only include markets with relevance score >= 4 (useful information or better)
+            if score >= 4:
                 scored_markets.append(market)
             else:
                 filtered_markets.append(market)
-        
+
         # Format the filtered markets
         formatted_markets = format_markets(scored_markets)
-        
+
         # Get web results from Perplexity
         web_results = await get_perplexity_research_from_openrouter(
-            question.question_text, 
+            question.question_text,
             model_name=PERPLEXITY_SONAR
         )
-        
+
         # Extract facts and follow-up questions from the web results
         facts = FactsExtractor.extract_facts(web_results)
-        follow_up_questions = FollowUpQuestionsExtractor.extract_follow_up_questions(web_results)
-        
+        follow_up_questions = FollowUpQuestionsExtractor.extract_follow_up_questions(
+            web_results)
+
         # Verify each fact with Perplexity
         verified_facts = []
         print("\nVerifying facts:")
@@ -1495,7 +1501,7 @@ class PerplexityFilteredRelatedMarketsScenarioBot(ForecastBot):
             })
             print(f"Verification result:\n{verification}")
             print("-" * 80)
-        
+
         # Process follow-up questions
         follow_up_results = []
         if follow_up_questions:
@@ -1514,25 +1520,25 @@ class PerplexityFilteredRelatedMarketsScenarioBot(ForecastBot):
                 })
                 print(f"Answer:\n{result}")
                 print("-" * 80)
-        
+
         # Add report of filtered markets
         filtered_report = "\nMarkets which were considered not relevant:\n"
         for market in filtered_markets:
             filtered_report += f"- {market.get('name', 'Unnamed Market')}\n"
-        
+
         # Format facts with their verifications
         facts_section = "\nKey Facts (with verifications):\n"
         for vf in verified_facts:
             facts_section += f"- Fact: {vf['fact']}\n  Verification: {vf['verification']}\n\n"
-        
+
         # Format follow-up questions with their answers
         questions_section = "\nFollow-up Questions (with answers):\n"
         for fr in follow_up_results:
             questions_section += f"- Question: {fr['question']}\n  Answer: {fr['answer']}\n\n"
-        
+
         # Create the initial research report
         initial_research = f"Web search results (Perplexity Sonar Reasoning):\n{web_results}\n\nRelated markets info:\n{formatted_markets}\n{filtered_report}{facts_section}{questions_section}"
-        
+
         # Run a second prompt to process all the research and follow-up results
         second_prompt = clean_indents(
             f"""
@@ -1560,10 +1566,10 @@ class PerplexityFilteredRelatedMarketsScenarioBot(ForecastBot):
             {PROBABILITY_FINAL_ANSWER_LINE}
             """
         )
-        
+
         # Get the second analysis
         second_analysis = await self.get_llm().invoke(second_prompt)
-        
+
         # Combine everything into the final report
         final_report = f"""
         Original Research and Initial Analysis:
@@ -1572,7 +1578,7 @@ class PerplexityFilteredRelatedMarketsScenarioBot(ForecastBot):
         Updated Analysis After Follow-up Research:
         {second_analysis}
         """
-        
+
         return final_report
 
     async def _run_forecast_on_binary(self, question: BinaryQuestion, research: str) -> ReasonedPrediction[float]:
@@ -1604,9 +1610,9 @@ class PerplexityFilteredRelatedMarketsScenarioBot(ForecastBot):
             (a) Write out a quick summary of the situation as we know it, from the research. Please include the amount of time left between now and the question's resolution.
             (b) Write out 3 - 5 sentence-length scenarios based on the question, including at least one where the question would resolve no and one where it would resolve yes. The scenarios must be moderately different. If they aren't, just use yes and no.
             (c) Write out a paragraph about each scenario, describing how it might arise from the information. Then attempt to assign a base rate to it - how long has the world been possible for this scenario to occur, how many times has it done so in that time?
-            (d) Write 5 facts which are key parts of our current understanding of the situation.
-            (e) Write 5 follow up questions which would allow you to make a better decision.
-            (f) Suggest up to 5 prediction markets that could be created to aid this question
+            (d) Write 5 facts which are key parts of our current understanding of the situation. Start this with the headline "Key Facts"
+            (e) Write 5 follow up questions which would allow you to make a better decision. Start this with the headline "Follow Up Questions"
+            (f) Suggest up to 5 prediction markets that could be created to aid this question. Start this with the headline "Prediction Markets"
             (g) Consider all these scenarios and then give an overall probability as a number in the format described below.
             
             You write your rationale remembering that good forecasters put extra weight on the status quo outcome since the world changes slowly most of the time.
@@ -1709,7 +1715,7 @@ class PerplexityFilteredRelatedMarketsScenarioBot(ForecastBot):
 
 class PerplexityFilteredRelatedMarketsScenarioPerplexityBot(ForecastBot):
     name = "perplexity-scenario-filtered"
-    
+
     def __init__(self, llms: dict[str, GeneralLlm], predictions_per_research_report=1):
         super().__init__(llms=llms, predictions_per_research_report=predictions_per_research_report)
         # Use Claude Sonnet through OpenRouter for lightweight tasks
@@ -1722,7 +1728,7 @@ class PerplexityFilteredRelatedMarketsScenarioPerplexityBot(ForecastBot):
         """
         # Get market name using the same logic as in run_research
         name = market.get("name", market.get("question", "Unnamed Market"))
-        
+
         prompt = clean_indents(
             f"""
             You are evaluating how relevant a prediction market is to a forecasting question.
@@ -1769,7 +1775,7 @@ class PerplexityFilteredRelatedMarketsScenarioPerplexityBot(ForecastBot):
     async def run_research(self, question):
         # Get raw market data
         markets = get_related_markets_raw(question.question_text)
-        
+
         # Score each market's relevance
         scored_markets = []
         filtered_markets = []
@@ -1785,25 +1791,27 @@ class PerplexityFilteredRelatedMarketsScenarioPerplexityBot(ForecastBot):
             print(f"Reasoning:\n{reasoning}")
             print(f"Final score: {score}")
             print("-" * 80)
-            
-            if score >= 4:  # Only include markets with relevance score >= 4 (useful information or better)
+
+            # Only include markets with relevance score >= 4 (useful information or better)
+            if score >= 4:
                 scored_markets.append(market)
             else:
                 filtered_markets.append(market)
-        
+
         # Format the filtered markets
         formatted_markets = format_markets(scored_markets)
-        
+
         # Get web results from Perplexity
         web_results = await get_perplexity_research_from_openrouter(
-            question.question_text, 
+            question.question_text,
             model_name=PERPLEXITY_SONAR
         )
-        
+
         # Extract facts and follow-up questions from the web results
         facts = FactsExtractor.extract_facts(web_results)
-        follow_up_questions = FollowUpQuestionsExtractor.extract_follow_up_questions(web_results)
-        
+        follow_up_questions = FollowUpQuestionsExtractor.extract_follow_up_questions(
+            web_results)
+
         # Verify each fact with Perplexity
         verified_facts = []
         print("\nVerifying facts:")
@@ -1821,7 +1829,7 @@ class PerplexityFilteredRelatedMarketsScenarioPerplexityBot(ForecastBot):
             })
             print(f"Verification result:\n{verification}")
             print("-" * 80)
-        
+
         # Process follow-up questions
         follow_up_results = []
         if follow_up_questions:
@@ -1840,25 +1848,25 @@ class PerplexityFilteredRelatedMarketsScenarioPerplexityBot(ForecastBot):
                 })
                 print(f"Answer:\n{result}")
                 print("-" * 80)
-        
+
         # Add report of filtered markets
         filtered_report = "\nMarkets which were considered not relevant:\n"
         for market in filtered_markets:
             filtered_report += f"- {market.get('name', 'Unnamed Market')}\n"
-        
+
         # Format facts with their verifications
         facts_section = "\nKey Facts (with verifications):\n"
         for vf in verified_facts:
             facts_section += f"- Fact: {vf['fact']}\n  Verification: {vf['verification']}\n\n"
-        
+
         # Format follow-up questions with their answers
         questions_section = "\nFollow-up Questions (with answers):\n"
         for fr in follow_up_results:
             questions_section += f"- Question: {fr['question']}\n  Answer: {fr['answer']}\n\n"
-        
+
         # Create the initial research report
         initial_research = f"Web search results (Perplexity Sonar Reasoning):\n{web_results}\n\nRelated markets info:\n{formatted_markets}\n{filtered_report}{facts_section}{questions_section}"
-        
+
         # Run a second prompt to process all the research and follow-up results
         second_prompt = clean_indents(
             f"""
@@ -1886,10 +1894,10 @@ class PerplexityFilteredRelatedMarketsScenarioPerplexityBot(ForecastBot):
             {PROBABILITY_FINAL_ANSWER_LINE}
             """
         )
-        
+
         # Get the second analysis
         second_analysis = await self.get_llm().invoke(second_prompt)
-        
+
         # Combine everything into the final report
         final_report = f"""
 Original Research and Initial Analysis:
@@ -1898,7 +1906,7 @@ Original Research and Initial Analysis:
 Updated Analysis After Follow-up Research:
 {second_analysis}
 """
-        
+
         return final_report
 
     async def _run_forecast_on_binary(self, question: BinaryQuestion, research: str) -> ReasonedPrediction[float]:

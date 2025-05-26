@@ -382,7 +382,8 @@ if __name__ == "__main__":
             "default": GeneralLlm(model="o3", temperature=0.2),
             "summarizer": GeneralLlm(model="o3", temperature=0.2)
         },
-        predictions_per_research_report=5
+        predictions_per_research_report=5,
+        publish_reports_to_metaculus=True
     )
 
     if run_mode == "tournament":
