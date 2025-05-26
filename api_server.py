@@ -4,7 +4,7 @@ from pydantic import BaseModel
 import asyncio
 import os
 from forecasting_tools import BinaryQuestion, GeneralLlm
-from bots import PerplexityRelatedMarketsScenarioBot
+from current_best_bot import get_best_bot
 
 API_KEY = os.getenv("API_SERVER_KEY", "changeme")
 
@@ -52,14 +52,7 @@ async def forecast_binary(
         id_of_post=-1,
         page_url="api://user-question"
     )
-    bot = PerplexityRelatedMarketsScenarioBot(
-        llms={
-            "default": GeneralLlm(model="o3", temperature=0.2),
-            "summarizer": GeneralLlm(model="o3", temperature=0.2)
-        },
-        predictions_per_research_report=5,
-        publish_reports_to_metaculus=False
-    )
+    bot = get_best_bot(publish_reports_to_metaculus=False)
     try:
         forecast_reports = await bot.forecast_questions([user_question], return_exceptions=True)
         # Just return the first report for now

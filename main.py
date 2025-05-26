@@ -22,7 +22,7 @@ from forecasting_tools import (
     SmartSearcher,
     clean_indents,
 )
-from bots import PerplexityRelatedMarketsScenarioBot
+from current_best_bot import get_best_bot
 
 logger = logging.getLogger(__name__)
 
@@ -377,14 +377,7 @@ if __name__ == "__main__":
         "test_questions",
     ], "Invalid run mode"
 
-    bot = PerplexityRelatedMarketsScenarioBot(
-        llms={
-            "default": GeneralLlm(model="o3", temperature=0.2),
-            "summarizer": GeneralLlm(model="o3", temperature=0.2)
-        },
-        predictions_per_research_report=5,
-        publish_reports_to_metaculus=True
-    )
+    bot = get_best_bot(publish_reports_to_metaculus=True)
 
     if run_mode == "tournament":
         forecast_reports = asyncio.run(

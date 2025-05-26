@@ -14,6 +14,9 @@ This tutorial shows you how to set our template bot so you can start forecasting
 
 If you run into trouble, reach out to `ben [at] metaculus [.com]`
 
+## Centralized Best Bot Configuration
+
+To ensure consistency and make it easy to update the "current best" bot and its settings, this codebase uses a single file, `current_best_bot.py`, as the source of truth for which bot is used in production and with what parameters. All main entry points (such as `main.py` and `api_server.py`) import the function `get_best_bot` from this file to instantiate the bot. This means that if you want to change which bot is used, or update its configuration, you only need to update `current_best_bot.py`.
 
 ## Quick start -> Fork and use Github Actions
 The easiest way to use this repo is to fork it, enable github workflow/actions, and then set repository secrets. Then your bot will run every 30min, pick up new questions, and forecast on them. Automation is handled in the `.github/workflows/` folder. The `daily_run_simple_bot.yaml` file runs the simple bot every 30 min and will skip questions it has already forecasted on.
