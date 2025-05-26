@@ -2,6 +2,6 @@
 buildCommand = "poetry install"
 
 [deploy]
-startCommand = "uvicorn api_server:app --host 0.0.0.0 --port $PORT"
+startCommand = "uvicorn api_server:app --host 0.0.0.0 --port $PORT --loop asyncio"
 healthcheckPath = "/health"
 healthcheckTimeout = 100
