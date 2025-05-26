@@ -19,6 +19,7 @@ from forecasting_tools import (
 )
 
 from bots import (
+    P_RM_NathanV1_Bot,
     PerplexityFilteredRelatedMarketsScenarioPerplexityBot,
 )
 
@@ -31,7 +32,7 @@ async def benchmark_forecast_bot(mode: str) -> None:
     """
 
     # Recommend 100+ for meaningful error bars, but 30 is faster/cheaper
-    number_of_questions = 1
+    number_of_questions = 30
     if mode == "display":
         run_benchmark_streamlit_page()
         return
@@ -65,11 +66,11 @@ async def benchmark_forecast_bot(mode: str) -> None:
                     model="openrouter/openai/gpt-4o-mini", temperature=0.2)},
                 predictions_per_research_report=5
             ),
-            # P_RM_NathanV1_Bot(
-            #     llms={"default": GeneralLlm(model="gpt-4o-mini", temperature=0.2), "summarizer": GeneralLlm(
-            #         model="gpt-4o-mini", temperature=0.2)},
-            #     predictions_per_research_report=5
-            # ),
+            P_RM_NathanV1_Bot(
+                llms={"default": GeneralLlm(model="openrouter/openai/gpt-4o-mini", temperature=0.2), "summarizer": GeneralLlm(
+                    model="openrouter/openai/gpt-4o-mini", temperature=0.2)},
+                predictions_per_research_report=5
+            ),
         ]
         bots = typeguard.check_type(bots, list[ForecastBot])
         benchmarks = await Benchmarker(

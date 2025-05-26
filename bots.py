@@ -2,6 +2,7 @@ from forecasting_tools import (
     ForecastBot, ReasonedPrediction, BinaryQuestion, MultipleChoiceQuestion, NumericQuestion, NumericDistribution, PredictedOptionList,
     GeneralLlm, PredictionExtractor, clean_indents
 )
+from prompts import nathan_v1_binary_prompt, nathan_v1_mc_prompt, nathan_v1_numeric_prompt
 from tools import get_related_markets_from_adjacent_news, get_web_search_results_from_openrouter, fermi_estimate_with_llm, get_perplexity_research_from_openrouter, log_report_summary_returning_str, get_related_markets_raw, format_markets, IntegerExtractor, FactsExtractor, FollowUpQuestionsExtractor
 from datetime import datetime
 import traceback
@@ -2035,6 +2036,43 @@ Updated Analysis After Follow-up Research:
         prediction = PredictionExtractor.extract_numeric_distribution_from_list_of_percentile_number_and_probability(
             reasoning, question)
         return ReasonedPrediction(prediction_value=prediction, reasoning=reasoning)
+
+    @staticmethod
+    def log_report_summary(forecast_reports):
+        return log_report_summary_returning_str(forecast_reports)
+
+
+class P_RM_NathanV1_Bot(ForecastBot):
+    def __init__(self, llms: dict[str, GeneralLlm], predictions_per_research_report=1):
+        super().__init__(llms=llms, predictions_per_research_report=predictions_per_research_report)
+
+    async def run_research(self, question):
+        # Use Perplexity via OpenRouter (sonar-reasoning) for web research
+        web_results = await get_perplexity_research_from_openrouter(question.question_text, model_name="openrouter/perplexity/sonar-reasoning")
+        related_markets = get_related_markets_from_adjacent_news(
+            question.question_text)
+        return f"Web search results (Perplexity Sonar Reasoning):\n{web_results}\n\nRelated markets info:\n{related_markets}"
+
+    async def _run_forecast_on_binary(self, question: BinaryQuestion, research: str) -> ReasonedPrediction[float]:
+        prompt = nathan_v1_binary_prompt(question, research)
+        rationale = await self.get_llm().invoke(prompt)
+        prediction = PredictionExtractor.extract_last_percentage_value(
+            rationale, max_prediction=1, min_prediction=0)
+        return ReasonedPrediction(prediction_value=prediction, reasoning=rationale)
+
+    async def _run_forecast_on_multiple_choice(self, question: MultipleChoiceQuestion, research: str) -> ReasonedPrediction[PredictedOptionList]:
+        prompt = nathan_v1_mc_prompt(question, research)
+        rationale = await self.get_llm().invoke(prompt)
+        prediction = PredictionExtractor.extract_option_list_with_percentage_afterwards(
+            rationale, question.options)
+        return ReasonedPrediction(prediction_value=prediction, reasoning=rationale)
+
+    async def _run_forecast_on_numeric(self, question: NumericQuestion, research: str) -> ReasonedPrediction[NumericDistribution]:
+        prompt = nathan_v1_numeric_prompt(question, research)
+        rationale = await self.get_llm().invoke(prompt)
+        prediction = PredictionExtractor.extract_numeric_distribution_from_list_of_percentile_number_and_probability(
+            rationale, question)
+        return ReasonedPrediction(prediction_value=prediction, reasoning=rationale)
 
     @staticmethod
     def log_report_summary(forecast_reports):
