@@ -1389,8 +1389,12 @@ class PerplexityRelatedMarketsScenarioBot(ForecastBot):
 class PerplexityFilteredRelatedMarketsScenarioBot(ForecastBot):
     name = "perplexity-scenario-filtered"
 
-    def __init__(self, llms: dict[str, GeneralLlm], predictions_per_research_report=1):
-        super().__init__(llms=llms, predictions_per_research_report=predictions_per_research_report)
+    def __init__(self, llms: dict[str, GeneralLlm], predictions_per_research_report=1, publish_reports_to_metaculus=False):
+        super().__init__(
+            llms=llms,
+            predictions_per_research_report=predictions_per_research_report,
+            publish_reports_to_metaculus=publish_reports_to_metaculus
+        )
         # Use Claude Sonnet through OpenRouter for lightweight tasks
         self.lightweight_llm = GeneralLlm(model=CLAUDE_SONNET, temperature=0.2)
 
@@ -1717,14 +1721,18 @@ class PerplexityFilteredRelatedMarketsScenarioBot(ForecastBot):
 class PerplexityFilteredRelatedMarketsScenarioPerplexityBot(ForecastBot):
     name = "perplexity-scenario-filtered"
 
-    def __init__(self, llms: dict[str, GeneralLlm], predictions_per_research_report=1):
-        super().__init__(llms=llms, predictions_per_research_report=predictions_per_research_report)
+    def __init__(self, llms: dict[str, GeneralLlm], predictions_per_research_report=1, publish_reports_to_metaculus=False):
+        super().__init__(
+            llms=llms,
+            predictions_per_research_report=predictions_per_research_report,
+            publish_reports_to_metaculus=publish_reports_to_metaculus
+        )
         # Use Claude Sonnet through OpenRouter for lightweight tasks
         self.lightweight_llm = GeneralLlm(model=CLAUDE_SONNET, temperature=0.2)
 
     async def score_market_relevance(self, market: dict, question: str, current_date: str) -> dict:
         """
-        Score how relevant a market is to the question using Claude Sonnet.
+        Score how relevant a market is to the question using the main LLM (via self.get_llm()).
         Returns a dict containing the score and reasoning.
         """
         # Get market name using the same logic as in run_research
