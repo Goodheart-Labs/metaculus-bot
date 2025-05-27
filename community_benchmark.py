@@ -34,7 +34,7 @@ async def benchmark_forecast_bot(mode: str) -> None:
     """
 
     # Recommend 100+ for meaningful error bars, but 30 is faster/cheaper
-    number_of_questions = 60
+    number_of_questions = 1
     if mode == "display":
         run_benchmark_streamlit_page()
         return
@@ -63,22 +63,36 @@ async def benchmark_forecast_bot(mode: str) -> None:
 
     with MonetaryCostManager() as cost_manager:
         bots = [
-            PerplexityRelatedMarketsScenarioBot(
-                llms={"default": GeneralLlm(model="openrouter/openai/gpt-4o-mini", temperature=0.2), "summarizer": GeneralLlm(
-                    model="openrouter/openai/gpt-4o-mini", temperature=0.2)},
+            # PerplexityFilteredRelatedMarketsScenarioPerplexityBot(
+            #     llms={"default": GeneralLlm(model="o3", temperature=0.2), "summarizer": GeneralLlm(
+            #         model="o3", temperature=0.2)},
+            #     predictions_per_research_report=5,
+            #     publish_reports_to_metaculus=False
+            # ),
+            PerplexityFilteredRelatedMarketsScenarioPerplexityBot(
+                llms={"default": GeneralLlm(model="o4-mini", temperature=1), "summarizer": GeneralLlm(
+                    model="o4-mini", temperature=1)},
                 predictions_per_research_report=5,
                 publish_reports_to_metaculus=False
             ),
-            PerplexityFilteredRelatedMarketsScenarioPerplexityBot(
-                llms={"default": GeneralLlm(model="openrouter/openai/gpt-4o-mini", temperature=0.2), "summarizer": GeneralLlm(
-                    model="openrouter/openai/gpt-4o-mini", temperature=0.2)},
-                predictions_per_research_report=5
-            ),
-            P_RM_NathanV1_Bot(
-                llms={"default": GeneralLlm(model="openrouter/openai/gpt-4o-mini", temperature=0.2), "summarizer": GeneralLlm(
-                    model="openrouter/openai/gpt-4o-mini", temperature=0.2)},
-                predictions_per_research_report=5
-            ),
+            # PerplexityFilteredRelatedMarketsScenarioPerplexityBot(
+            #     llms={"default": GeneralLlm(model="openrouter/anthropic/claude-sonnet-4", temperature=0.2), "summarizer": GeneralLlm(
+            #         model="openrouter/anthropic/claude-sonnet-4", temperature=0.2)},
+            #     predictions_per_research_report=5,
+            #     publish_reports_to_metaculus=False
+            # ),
+            # PerplexityFilteredRelatedMarketsScenarioPerplexityBot(
+            #     llms={"default": GeneralLlm(model="openrouter/anthropic/claude-opus-4", temperature=0.2), "summarizer": GeneralLlm(
+            #         model="openrouter/anthropic/claude-opus-4", temperature=0.2)},
+            #     predictions_per_research_report=5,
+            #     publish_reports_to_metaculus=False
+            # ),
+            # PerplexityFilteredRelatedMarketsScenarioPerplexityBot(
+            #     llms={"default": GeneralLlm(model="openrouter/google/gemini-2.5-pro-preview", temperature=0.2), "summarizer": GeneralLlm(
+            #         model="openrouter/google/gemini-2.5-pro-preview", temperature=0.2)},
+            #     predictions_per_research_report=5,
+            #     publish_reports_to_metaculus=False
+            # ),
         ]
         bots = typeguard.check_type(bots, list[ForecastBot])
         benchmarks = await Benchmarker(
