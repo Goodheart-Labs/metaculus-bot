@@ -57,11 +57,10 @@ async def forecast_binary(
         forecast_reports = await bot.forecast_questions([user_question], return_exceptions=True)
         # Just return the first report for now
         report = forecast_reports[0]
-        # Try to extract main fields
+        # Return human-readable, valid JSON fields
         return {
-            "prediction": getattr(report, "prediction_value", None),
-            "reasoning": getattr(report, "reasoning", None),
-            "raw": str(report)
+            "reasoning": getattr(report, "summary", None),
+            "prediction": getattr(report, "prediction", None)
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

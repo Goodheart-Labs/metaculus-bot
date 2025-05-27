@@ -274,3 +274,66 @@ Below are some ideas for making a novel bot.
 - Assigning points to evidence: Starting with some ideas from a [blog post from Ozzie Gooen](https://forum.effectivealtruism.org/posts/mrAZFnEjsQAQPJvLh/using-points-to-rate-different-kinds-of-evidence), you could experiment with assigning 'points' to major types of evidence and having GPT categorize the evidence it finds related to a forecast so that the 'total points' can be calculated. This can then be turned into a forecast, and potentially optimized using machine learning on past Metaculus data.
 - Search provider benchmark: Run bots using different combinations of search providers (e.g. Google, Bing, Exa.ai, Tavily, AskNews, Perplexity, etc) and search filters (e.g. only recent data, sites with a certain search rank, etc) and see if any specific one is better than others, or if using multiple of them makes a difference.
 - Timeline researcher: Make a tool that can take a niche topic and make a timeline for all major and minor events relevant to that topic.
+
+### Running the API Server (FastAPI)
+
+This repo includes a FastAPI server that wraps the current best bot and exposes a simple API endpoint for binary forecasting questions.
+
+#### Running Locally
+
+1. **Install dependencies** (if you haven't already):
+   ```bash
+   poetry install
+   ```
+2. **Set your API key** (for local dev):
+   - Create a `.env` file or set the environment variable `API_SERVER_KEY` (default is `changeme` if not set).
+   - Example `.env`:
+     ```env
+     API_SERVER_KEY=your_secret_key_here
+     # Add any other keys your bot needs (e.g., OPENROUTER_API_KEY, PERPLEXITY_API_KEY, etc.)
+     ```
+3. **Run the server:**
+   ```bash
+   poetry run uvicorn api_server:app --reload --loop asyncio
+   ```
+   The server will be available at `http://localhost:8000`.
+
+#### API Endpoints
+
+- **POST `/forecast-binary`**
+  - **Headers:**
+    - `Authorization: Bearer <your_api_key>`
+    - `Content-Type: application/json`
+  - **Body:**
+    ```json
+    {
+      "question": "Will it rain tomorrow?",
+      "resolution_criteria": "",  // optional
+      "fine_print": null,          // optional
+      "background_info": null      // optional
+    }
+    ```
+  - **Response:**
+    ```json
+    {
+      "prediction": 0.42,
+      "reasoning": "...",
+      "raw": "..."
+    }
+    ```
+
+- **GET `/health`**
+  - Returns `{ "status": "ok" }` if the server is running.
+
+#### Example curl request
+```bash
+curl -X POST http://localhost:8000/forecast-binary \
+  -H "Authorization: Bearer your_secret_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{"question": "Will it rain tomorrow?"}'
+```
+
+#### Deploying to Railway
+- See the `Procfile` and `railway.toml` for deployment configuration.
+- Set your environment variables (API keys) in the Railway dashboard.
+- The server will be available at your Railway-provided URL.
