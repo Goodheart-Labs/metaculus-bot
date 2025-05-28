@@ -1,0 +1,5 @@
+[build]
+buildCommand = "poetry install"
+
+[deploy]
+startCommand = "python slack_bot.py"
