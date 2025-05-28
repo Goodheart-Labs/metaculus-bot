@@ -1336,6 +1336,8 @@ class PerplexityRelatedMarketsScenarioBot(ForecastBot):
             Option_B: Probability_B
             ...
             Option_N: Probability_N
+            
+            IMPORTANT: Your final probabilities must be in the format above, where each Probability_X is an integer between 0 and 100 (no decimals, no negative numbers), and the sum of all probabilities must be exactly 100. If you are unsure, distribute some probability to all options so the sum is 100.
             """
         )
         reasoning = await self.get_llm().invoke(prompt)
@@ -1669,6 +1671,8 @@ class PerplexityFilteredRelatedMarketsScenarioBot(ForecastBot):
             Option_B: Probability_B
             ...
             Option_N: Probability_N
+            
+            IMPORTANT: Your final probabilities must be in the format above, where each Probability_X is an integer between 0 and 100 (no decimals, no negative numbers), and the sum of all probabilities must be exactly 100. If you are unsure, distribute some probability to all options so the sum is 100.
             """
         )
         reasoning = await self.get_llm().invoke(prompt)
@@ -2002,6 +2006,8 @@ Updated Analysis After Follow-up Research:
             Option_B: Probability_B
             ...
             Option_N: Probability_N
+            
+            IMPORTANT: Your final probabilities must be in the format above, where each Probability_X is an integer between 0 and 100 (no decimals, no negative numbers), and the sum of all probabilities must be exactly 100. If you are unsure, distribute some probability to all options so the sum is 100.
             """
         )
         reasoning = await self.get_llm().invoke(prompt)
