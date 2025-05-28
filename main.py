@@ -378,7 +378,8 @@ if __name__ == "__main__":
         "test_questions",
     ], "Invalid run mode"
 
-    bot = get_best_bot(publish_reports_to_metaculus=True)
+    bot = get_best_bot(publish_reports_to_metaculus=True,
+                       skip_previously_forecasted_questions=True)
 
     if run_mode == "tournament":
         forecast_reports = asyncio.run(

@@ -19,8 +19,9 @@ PROBABILITY_FINAL_ANSWER_LINE = (
 
 
 class AdjacentNewsRelatedMarketsBot(ForecastBot):
-    def __init__(self, llms: dict[str, GeneralLlm]):
-        super().__init__(llms=llms)
+    def __init__(self, llms: dict[str, GeneralLlm], skip_previously_forecasted_questions: bool = False):
+        super().__init__(llms=llms,
+                         skip_previously_forecasted_questions=skip_previously_forecasted_questions)
 
     async def run_research(self, question):
         return get_related_markets_from_adjacent_news(question.question_text)
@@ -177,8 +178,9 @@ class AdjacentNewsRelatedMarketsBot(ForecastBot):
 
 
 class OpenRouterWebSearchBot(ForecastBot):
-    def __init__(self, llms: dict[str, GeneralLlm]):
-        super().__init__(llms=llms)
+    def __init__(self, llms: dict[str, GeneralLlm], skip_previously_forecasted_questions: bool = False):
+        super().__init__(llms=llms,
+                         skip_previously_forecasted_questions=skip_previously_forecasted_questions)
 
     async def run_research(self, question):
         return get_web_search_results_from_openrouter(question.question_text)
@@ -335,8 +337,9 @@ class OpenRouterWebSearchBot(ForecastBot):
 
 
 class CombinedWebAndAdjacentNewsBot(ForecastBot):
-    def __init__(self, llms: dict[str, GeneralLlm], predictions_per_research_report=1):
-        super().__init__(llms=llms, predictions_per_research_report=predictions_per_research_report)
+    def __init__(self, llms: dict[str, GeneralLlm], predictions_per_research_report=1, skip_previously_forecasted_questions: bool = False):
+        super().__init__(llms=llms, predictions_per_research_report=predictions_per_research_report,
+                         skip_previously_forecasted_questions=skip_previously_forecasted_questions)
 
     async def run_research(self, question):
         web_results = get_web_search_results_from_openrouter(
@@ -497,8 +500,9 @@ class CombinedWebAndAdjacentNewsBot(ForecastBot):
 
 
 class FermiEstimationBot(ForecastBot):
-    def __init__(self, llms: dict[str, GeneralLlm]):
-        super().__init__(llms=llms)
+    def __init__(self, llms: dict[str, GeneralLlm], skip_previously_forecasted_questions: bool = False):
+        super().__init__(llms=llms,
+                         skip_previously_forecasted_questions=skip_previously_forecasted_questions)
 
     async def run_research(self, question):
         return ""  # Fermi estimation bot does not use external research
@@ -528,8 +532,9 @@ class FermiEstimationBot(ForecastBot):
 
 
 class PerplexityRelatedMarketsBot(ForecastBot):
-    def __init__(self, llms: dict[str, GeneralLlm], predictions_per_research_report=1):
-        super().__init__(llms=llms, predictions_per_research_report=predictions_per_research_report)
+    def __init__(self, llms: dict[str, GeneralLlm], predictions_per_research_report=1, skip_previously_forecasted_questions: bool = False):
+        super().__init__(llms=llms, predictions_per_research_report=predictions_per_research_report,
+                         skip_previously_forecasted_questions=skip_previously_forecasted_questions)
 
     async def run_research(self, question):
         # Use Perplexity via OpenRouter (sonar-reasoning) for web research
@@ -691,8 +696,9 @@ class PerplexityRelatedMarketsBot(ForecastBot):
 
 
 class OpenSearchPerpAdjMarkets(ForecastBot):
-    def __init__(self, llms: dict[str, GeneralLlm]):
-        super().__init__(llms=llms)
+    def __init__(self, llms: dict[str, GeneralLlm], skip_previously_forecasted_questions: bool = False):
+        super().__init__(llms=llms,
+                         skip_previously_forecasted_questions=skip_previously_forecasted_questions)
 
     async def run_research(self, question):
         web_results = get_web_search_results_from_openrouter(
@@ -860,8 +866,9 @@ class OpenSearchPerpAdjMarkets(ForecastBot):
 
 
 class FermiResearchFirstBot(ForecastBot):
-    def __init__(self, llms: dict[str, GeneralLlm]):
-        super().__init__(llms=llms)
+    def __init__(self, llms: dict[str, GeneralLlm], skip_previously_forecasted_questions: bool = False):
+        super().__init__(llms=llms,
+                         skip_previously_forecasted_questions=skip_previously_forecasted_questions)
 
     async def run_research(self, question):
         web_results = get_web_search_results_from_openrouter(
@@ -1025,8 +1032,9 @@ class FermiResearchFirstBot(ForecastBot):
 
 
 class FermiWithSearchControl(ForecastBot):
-    def __init__(self, llms: dict[str, GeneralLlm]):
-        super().__init__(llms=llms)
+    def __init__(self, llms: dict[str, GeneralLlm], skip_previously_forecasted_questions: bool = False):
+        super().__init__(llms=llms,
+                         skip_previously_forecasted_questions=skip_previously_forecasted_questions)
 
     async def run_research(self, question):
         print("[FermiWithSearchControl] Entering run_research")
@@ -1241,11 +1249,12 @@ class FermiWithSearchControl(ForecastBot):
 class PerplexityRelatedMarketsScenarioBot(ForecastBot):
     name = "perplexity-scenario"
 
-    def __init__(self, llms: dict[str, GeneralLlm], predictions_per_research_report=1, publish_reports_to_metaculus=False):
+    def __init__(self, llms: dict[str, GeneralLlm], predictions_per_research_report=1, publish_reports_to_metaculus=False, skip_previously_forecasted_questions: bool = False):
         super().__init__(
             llms=llms,
             predictions_per_research_report=predictions_per_research_report,
-            publish_reports_to_metaculus=publish_reports_to_metaculus
+            publish_reports_to_metaculus=publish_reports_to_metaculus,
+            skip_previously_forecasted_questions=skip_previously_forecasted_questions
         )
 
     async def run_research(self, question):
@@ -1389,11 +1398,12 @@ class PerplexityRelatedMarketsScenarioBot(ForecastBot):
 class PerplexityFilteredRelatedMarketsScenarioBot(ForecastBot):
     name = "perplexity-scenario-filtered"
 
-    def __init__(self, llms: dict[str, GeneralLlm], predictions_per_research_report=1, publish_reports_to_metaculus=False):
+    def __init__(self, llms: dict[str, GeneralLlm], predictions_per_research_report=1, publish_reports_to_metaculus=False, skip_previously_forecasted_questions: bool = False):
         super().__init__(
             llms=llms,
             predictions_per_research_report=predictions_per_research_report,
-            publish_reports_to_metaculus=publish_reports_to_metaculus
+            publish_reports_to_metaculus=publish_reports_to_metaculus,
+            skip_previously_forecasted_questions=skip_previously_forecasted_questions
         )
         # Use Claude Sonnet through OpenRouter for lightweight tasks
         self.lightweight_llm = GeneralLlm(model=CLAUDE_SONNET, temperature=0.2)
@@ -1721,11 +1731,12 @@ class PerplexityFilteredRelatedMarketsScenarioBot(ForecastBot):
 class PerplexityFilteredRelatedMarketsScenarioPerplexityBot(ForecastBot):
     name = "perplexity-scenario-filtered"
 
-    def __init__(self, llms: dict[str, GeneralLlm], predictions_per_research_report=1, publish_reports_to_metaculus=False):
+    def __init__(self, llms: dict[str, GeneralLlm], predictions_per_research_report=1, publish_reports_to_metaculus=False, skip_previously_forecasted_questions: bool = False):
         super().__init__(
             llms=llms,
             predictions_per_research_report=predictions_per_research_report,
-            publish_reports_to_metaculus=publish_reports_to_metaculus
+            publish_reports_to_metaculus=publish_reports_to_metaculus,
+            skip_previously_forecasted_questions=skip_previously_forecasted_questions
         )
         # Use Claude Sonnet through OpenRouter for lightweight tasks
         self.lightweight_llm = GeneralLlm(model=CLAUDE_SONNET, temperature=0.2)
@@ -2051,8 +2062,9 @@ Updated Analysis After Follow-up Research:
 
 
 class P_RM_NathanV1_Bot(ForecastBot):
-    def __init__(self, llms: dict[str, GeneralLlm], predictions_per_research_report=1):
-        super().__init__(llms=llms, predictions_per_research_report=predictions_per_research_report)
+    def __init__(self, llms: dict[str, GeneralLlm], predictions_per_research_report=1, skip_previously_forecasted_questions: bool = False):
+        super().__init__(llms=llms, predictions_per_research_report=predictions_per_research_report,
+                         skip_previously_forecasted_questions=skip_previously_forecasted_questions)
 
     async def run_research(self, question):
         # Use Perplexity via OpenRouter (sonar-reasoning) for web research
