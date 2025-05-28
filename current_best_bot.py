@@ -8,8 +8,8 @@ def get_best_bot(publish_reports_to_metaculus: bool = False):
     Set publish_reports_to_metaculus=True for tournament/main, False for API, etc.
     """
     llms = {
-        "default": GeneralLlm(model="o3", temperature=0.2),
-        "summarizer": GeneralLlm(model="o3", temperature=0.2)
+        "default": GeneralLlm(model="metaculus/o3", temperature=0.2),
+        "summarizer": GeneralLlm(model="metaculus/o3", temperature=0.2)
     }
     return PerplexityFilteredRelatedMarketsScenarioPerplexityBot(
         llms=llms,
