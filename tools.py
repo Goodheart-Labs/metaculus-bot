@@ -153,7 +153,7 @@ async def get_perplexity_research_from_openrouter(question: str, model_name: str
     return response
 
 
-def log_report_summary_returning_str(forecast_reports) -> str:
+def log_report_summary_returning_str(forecast_reports, raise_errors=False) -> str:
     # Import here to avoid circular import
     from forecasting_tools import clean_indents
     try:
@@ -208,7 +208,7 @@ def log_report_summary_returning_str(forecast_reports) -> str:
         logger.error(
             f"{len(minor_exceptions)} minor exceptions occurred while forecasting: {minor_exceptions}"
         )
-    if exceptions:
+    if exceptions and raise_errors:
         raise RuntimeError(
             f"{len(exceptions)} errors occurred while forecasting: {exceptions}"
         )
@@ -347,15 +347,15 @@ class IntegerExtractor:
         """
         Extract the last integer value from text that appears after "Score: ".
         The integer should be between min_value and max_value (inclusive).
-        
+
         Args:
             text: The text to search for an integer
             max_value: Maximum allowed value (default: 5)
             min_value: Minimum allowed value (default: 1)
-            
+
         Returns:
             The last integer found, clamped between min_value and max_value
-            
+
         Raises:
             ValueError: If no integer is found or if text is empty
         """
@@ -366,7 +366,7 @@ class IntegerExtractor:
         assert (
             min_value <= max_value
         ), f"Max value {max_value} is not greater than or equal to min value {min_value}"
-        
+
         # Look for integers after "Score: "
         matches = re.findall(r"Score:\s*(\d+)", text)
         if matches:
@@ -391,32 +391,33 @@ class FactsExtractor:
         """
         Extract a list of facts from text that appears after the "Key Facts" heading
         and before the next section.
-        
+
         Args:
             text: The text to search for facts
-            
+
         Returns:
             A list of facts, or empty list if none found
         """
         if not text or text.strip() == "":
             return []
-            
+
         # Look for the facts section starting with "Key Facts"
-        facts_section = re.search(r"Key Facts(.*?)(?=Follow Up Questions|$)", text, re.DOTALL)
+        facts_section = re.search(
+            r"Key Facts(.*?)(?=Follow Up Questions|$)", text, re.DOTALL)
         if not facts_section:
             return []
-            
+
         # Split into individual facts
         facts_text = facts_section.group(1).strip()
         facts = []
-        
+
         # Look for numbered or bulleted facts
         for line in facts_text.split('\n'):
             # Remove common bullet points and numbers
             line = re.sub(r'^[\d\.\-\*]+[\s]*', '', line.strip())
             if line and len(line) > 10:  # Only include non-empty lines with some content
                 facts.append(line)
-                
+
         return facts[:5]  # Return at most 5 facts
 
 
@@ -426,30 +427,32 @@ class FollowUpQuestionsExtractor:
         """
         Extract a list of follow-up questions from text that appears after the "Follow Up Questions" heading
         and before the next section.
-        
+
         Args:
             text: The text to search for follow-up questions
-            
+
         Returns:
             A list of follow-up questions, or empty list if none found
         """
         if not text or text.strip() == "":
             return []
-            
+
         # Look for the follow-up questions section starting with "Follow Up Questions"
-        questions_section = re.search(r"Follow Up Questions(.*?)(?=Prediction Markets|$)", text, re.DOTALL)
+        questions_section = re.search(
+            r"Follow Up Questions(.*?)(?=Prediction Markets|$)", text, re.DOTALL)
         if not questions_section:
             return []
-            
+
         # Split into individual questions
         questions_text = questions_section.group(1).strip()
         questions = []
-        
+
         # Look for numbered or bulleted questions
         for line in questions_text.split('\n'):
             # Remove common bullet points and numbers
             line = re.sub(r'^[\d\.\-\*]+[\s]*', '', line.strip())
-            if line and len(line) > 10 and line.endswith('?'):  # Only include non-empty lines that end with a question mark
+            # Only include non-empty lines that end with a question mark
+            if line and len(line) > 10 and line.endswith('?'):
                 questions.append(line)
-                
+
         return questions[:5]  # Return at most 5 questions

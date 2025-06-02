@@ -20,8 +20,8 @@ def get_best_bot(publish_reports_to_metaculus: bool = False, skip_previously_for
     )
 
 
-def log_report_summary(forecast_reports):
+def log_report_summary(forecast_reports, raise_errors=False):
     """
     Returns a summary string for a list of forecast reports, using the current best bot's summary logic.
     """
-    return PerplexityFilteredRelatedMarketsScenarioPerplexityBot.log_report_summary(forecast_reports)
+    return PerplexityFilteredRelatedMarketsScenarioPerplexityBot.log_report_summary(forecast_reports, raise_errors=raise_errors)

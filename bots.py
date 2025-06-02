@@ -173,8 +173,8 @@ class AdjacentNewsRelatedMarketsBot(ForecastBot):
         return ReasonedPrediction(prediction_value=prediction, reasoning=reasoning)
 
     @staticmethod
-    def log_report_summary(forecast_reports):
-        return log_report_summary_returning_str(forecast_reports)
+    def log_report_summary(forecast_reports, raise_errors=False):
+        return log_report_summary_returning_str(forecast_reports, raise_errors=raise_errors)
 
 
 class OpenRouterWebSearchBot(ForecastBot):
@@ -332,8 +332,8 @@ class OpenRouterWebSearchBot(ForecastBot):
         return ReasonedPrediction(prediction_value=prediction, reasoning=reasoning)
 
     @staticmethod
-    def log_report_summary(forecast_reports):
-        return log_report_summary_returning_str(forecast_reports)
+    def log_report_summary(forecast_reports, raise_errors=False):
+        return log_report_summary_returning_str(forecast_reports, raise_errors=raise_errors)
 
 
 class CombinedWebAndAdjacentNewsBot(ForecastBot):
@@ -495,8 +495,8 @@ class CombinedWebAndAdjacentNewsBot(ForecastBot):
         return ReasonedPrediction(prediction_value=prediction, reasoning=reasoning)
 
     @staticmethod
-    def log_report_summary(forecast_reports):
-        return log_report_summary_returning_str(forecast_reports)
+    def log_report_summary(forecast_reports, raise_errors=False):
+        return log_report_summary_returning_str(forecast_reports, raise_errors=raise_errors)
 
 
 class FermiEstimationBot(ForecastBot):
@@ -527,8 +527,8 @@ class FermiEstimationBot(ForecastBot):
         return ReasonedPrediction(prediction_value=prediction, reasoning=reasoning)
 
     @staticmethod
-    def log_report_summary(forecast_reports):
-        return log_report_summary_returning_str(forecast_reports)
+    def log_report_summary(forecast_reports, raise_errors=False):
+        return log_report_summary_returning_str(forecast_reports, raise_errors=raise_errors)
 
 
 class PerplexityRelatedMarketsBot(ForecastBot):
@@ -691,8 +691,8 @@ class PerplexityRelatedMarketsBot(ForecastBot):
         return ReasonedPrediction(prediction_value=prediction, reasoning=reasoning)
 
     @staticmethod
-    def log_report_summary(forecast_reports):
-        return log_report_summary_returning_str(forecast_reports)
+    def log_report_summary(forecast_reports, raise_errors=False):
+        return log_report_summary_returning_str(forecast_reports, raise_errors=raise_errors)
 
 
 class OpenSearchPerpAdjMarkets(ForecastBot):
@@ -861,8 +861,8 @@ class OpenSearchPerpAdjMarkets(ForecastBot):
         return ReasonedPrediction(prediction_value=prediction, reasoning=reasoning)
 
     @staticmethod
-    def log_report_summary(forecast_reports):
-        return log_report_summary_returning_str(forecast_reports)
+    def log_report_summary(forecast_reports, raise_errors=False):
+        return log_report_summary_returning_str(forecast_reports, raise_errors=raise_errors)
 
 
 class FermiResearchFirstBot(ForecastBot):
@@ -1027,8 +1027,8 @@ class FermiResearchFirstBot(ForecastBot):
         return ReasonedPrediction(prediction_value=prediction, reasoning=reasoning)
 
     @staticmethod
-    def log_report_summary(forecast_reports):
-        return log_report_summary_returning_str(forecast_reports)
+    def log_report_summary(forecast_reports, raise_errors=False):
+        return log_report_summary_returning_str(forecast_reports, raise_errors=raise_errors)
 
 
 class FermiWithSearchControl(ForecastBot):
@@ -1242,8 +1242,8 @@ class FermiWithSearchControl(ForecastBot):
             return ReasonedPrediction(prediction_value=None, reasoning=f"Exception: {e}")
 
     @staticmethod
-    def log_report_summary(forecast_reports):
-        return log_report_summary_returning_str(forecast_reports)
+    def log_report_summary(forecast_reports, raise_errors=False):
+        return log_report_summary_returning_str(forecast_reports, raise_errors=raise_errors)
 
 
 class PerplexityRelatedMarketsScenarioBot(ForecastBot):
@@ -1393,8 +1393,8 @@ class PerplexityRelatedMarketsScenarioBot(ForecastBot):
         return ReasonedPrediction(prediction_value=prediction, reasoning=reasoning)
 
     @staticmethod
-    def log_report_summary(forecast_reports):
-        return log_report_summary_returning_str(forecast_reports)
+    def log_report_summary(forecast_reports, raise_errors=False):
+        return log_report_summary_returning_str(forecast_reports, raise_errors=raise_errors)
 
 
 class PerplexityFilteredRelatedMarketsScenarioBot(ForecastBot):
@@ -1728,8 +1728,8 @@ class PerplexityFilteredRelatedMarketsScenarioBot(ForecastBot):
         return ReasonedPrediction(prediction_value=prediction, reasoning=reasoning)
 
     @staticmethod
-    def log_report_summary(forecast_reports):
-        return log_report_summary_returning_str(forecast_reports)
+    def log_report_summary(forecast_reports, raise_errors=False):
+        return log_report_summary_returning_str(forecast_reports, raise_errors=raise_errors)
 
 
 class PerplexityFilteredRelatedMarketsScenarioPerplexityBot(ForecastBot):
@@ -2063,8 +2063,8 @@ Updated Analysis After Follow-up Research:
         return ReasonedPrediction(prediction_value=prediction, reasoning=reasoning)
 
     @staticmethod
-    def log_report_summary(forecast_reports):
-        return log_report_summary_returning_str(forecast_reports)
+    def log_report_summary(forecast_reports, raise_errors=False):
+        return log_report_summary_returning_str(forecast_reports, raise_errors=raise_errors)
 
 
 class P_RM_NathanV1_Bot(ForecastBot):
@@ -2101,5 +2101,5 @@ class P_RM_NathanV1_Bot(ForecastBot):
         return ReasonedPrediction(prediction_value=prediction, reasoning=rationale)
 
     @staticmethod
-    def log_report_summary(forecast_reports):
-        return log_report_summary_returning_str(forecast_reports)
+    def log_report_summary(forecast_reports, raise_errors=False):
+        return log_report_summary_returning_str(forecast_reports, raise_errors=raise_errors)
