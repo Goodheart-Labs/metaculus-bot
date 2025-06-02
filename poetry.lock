@@ -560,7 +560,7 @@ files = [
     {file = "colorama-0.4.6-py2.py3-none-any.whl", hash = "sha256:4f1d9991f5acc0ca119f9d443620b77f9d6b33703e51011c16baf57afb285fc6"},
     {file = "colorama-0.4.6.tar.gz", hash = "sha256:08695f5cb7ed6e0531a20572697297273c47b8cae5a63ffc6d6ed5c201be6e44"},
 ]
-markers = {main = "platform_system == \"Windows\" or sys_platform == \"win32\"", dev = "sys_platform == \"win32\""}
+markers = {dev = "sys_platform == \"win32\""}
 
 [[package]]
 name = "comm"
@@ -823,20 +823,21 @@ typing = ["typing-extensions (>=4.12.2) ; python_version < \"3.11\""]
 
 [[package]]
 name = "forecasting-tools"
-version = "0.2.25"
+version = "0.2.41"
 description = "AI forecasting and research tools to help humans reason about and forecast the future"
 optional = false
 python-versions = "<4.0,>=3.10"
 groups = ["main"]
 files = [
-    {file = "forecasting_tools-0.2.25-py3-none-any.whl", hash = "sha256:585e3bbe90b51e1a561a837a7075c9740273ba81e95469e13044dbf828ff4437"},
-    {file = "forecasting_tools-0.2.25.tar.gz", hash = "sha256:5a238a4a5035ae6eeb69732a75017684a92a92de9a13ddcaa3c6dd085912e17f"},
+    {file = "forecasting_tools-0.2.41-py3-none-any.whl", hash = "sha256:eb847ab024411cb7ec5bf21930d5790b3f4a03cd5d2cab56502a68065f8187f7"},
+    {file = "forecasting_tools-0.2.41.tar.gz", hash = "sha256:e08f4df986d64cb49d48659265ed3fe92ebe50e3858d8cbe69827f136b1977bf"},
 ]
 
 [package.dependencies]
 aiofiles = ">=24.1.0,<25.0.0"
 aiohttp = ">=3.9.3,<4.0.0"
 aiolimiter = ">=1.1.0,<2.0.0"
+asknews = ">=0.9.1,<0.12.0"
 asyncio = ">=3.4.3,<4.0.0"
 exceptiongroup = ">=1.2.2,<2.0.0"
 faker = ">=37.0.1,<38.0.0"
@@ -844,17 +845,18 @@ litellm = ">=1.59.1,<2.0.0"
 nest-asyncio = ">=1.5.8,<2.0.0"
 numpy = ">=1.26.0,<3.0.0"
 openai = ">=1.51.0,<2.0.0"
+openai-agents = ">=0.0.16,<0.0.17"
 pandas = ">=2.2.3,<3.0.0"
-pillow = ">=11.0.0,<12.0.0"
+pillow = ">=9.0.0,<12.0.0"
 plotly = ">=5.24.1,<7.0.0"
 pydantic = ">=2.9.2,<3.0.0"
 python-dotenv = ">=1.0.0,<2.0.0"
 regex = ">=2024.11.6,<2025.0.0"
 requests = ">=2.32.3,<3.0.0"
-scikit-learn = ">=1.5.2,<1.7.0"
+scikit-learn = ">=1.5.2,<2.0.0"
 scipy = ">=1.12.0,<2.0.0"
-streamlit = ">=1.36.0,<2.0.0"
-tenacity = ">=9.0.0,<10.0.0"
+streamlit = ">=1.20.0,<2.0.0"
+tenacity = ">=8.0.0,<10.0.0"
 tiktoken = ">=0.8.0,<0.10.0"
 transformers = ">=4.44.1,<5.0.0"
 typeguard = ">=4.3.0,<5.0.0"
@@ -1036,6 +1038,21 @@ doc = ["sphinx (>=7.1.2,<7.2)", "sphinx-autodoc-typehints", "sphinx_rtd_theme"]
 test = ["coverage[toml]", "ddt (>=1.1.1,!=1.4.3)", "mock ; python_version < \"3.8\"", "mypy", "pre-commit", "pytest (>=7.3.1)", "pytest-cov", "pytest-instafail", "pytest-mock", "pytest-sugar", "typing-extensions ; python_version < \"3.11\""]
 
 [[package]]
+name = "griffe"
+version = "1.7.3"
+description = "Signatures for entire Python programs. Extract the structure, the frame, the skeleton of your project, to generate API documentation or find breaking changes in your API."
+optional = false
+python-versions = ">=3.9"
+groups = ["main"]
+files = [
+    {file = "griffe-1.7.3-py3-none-any.whl", hash = "sha256:c6b3ee30c2f0f17f30bcdef5068d6ab7a2a4f1b8bf1a3e74b56fffd21e1c5f75"},
+    {file = "griffe-1.7.3.tar.gz", hash = "sha256:52ee893c6a3a968b639ace8015bec9d36594961e156e23315c8e8e51401fa50b"},
+]
+
+[package.dependencies]
+colorama = ">=0.4"
+
+[[package]]
 name = "h11"
 version = "0.14.0"
 description = "A pure-Python, bring-your-own-I/O implementation of HTTP/1.1"
@@ -1150,6 +1167,18 @@ cli = ["click (==8.*)", "pygments (==2.*)", "rich (>=10,<14)"]
 http2 = ["h2 (>=3,<5)"]
 socks = ["socksio (==1.*)"]
 zstd = ["zstandard (>=0.18.0)"]
+
+[[package]]
+name = "httpx-sse"
+version = "0.4.0"
+description = "Consume Server-Sent Event (SSE) messages with HTTPX."
+optional = false
+python-versions = ">=3.8"
+groups = ["main"]
+files = [
+    {file = "httpx-sse-0.4.0.tar.gz", hash = "sha256:1e81a3a3070ce322add1d3529ed42eb5f70817f45ed6ec915ab753f961139721"},
+    {file = "httpx_sse-0.4.0-py3-none-any.whl", hash = "sha256:f329af6eae57eaa2bdfd962b42524764af68075ea87370a2de920af5341e318f"},
+]
 
 [[package]]
 name = "huggingface-hub"
@@ -1656,6 +1685,34 @@ files = [
 traitlets = "*"
 
 [[package]]
+name = "mcp"
+version = "1.9.2"
+description = "Model Context Protocol SDK"
+optional = false
+python-versions = ">=3.10"
+groups = ["main"]
+files = [
+    {file = "mcp-1.9.2-py3-none-any.whl", hash = "sha256:bc29f7fd67d157fef378f89a4210384f5fecf1168d0feb12d22929818723f978"},
+    {file = "mcp-1.9.2.tar.gz", hash = "sha256:3c7651c053d635fd235990a12e84509fe32780cd359a5bbef352e20d4d963c05"},
+]
+
+[package.dependencies]
+anyio = ">=4.5"
+httpx = ">=0.27"
+httpx-sse = ">=0.4"
+pydantic = ">=2.7.2,<3.0.0"
+pydantic-settings = ">=2.5.2"
+python-multipart = ">=0.0.9"
+sse-starlette = ">=1.6.1"
+starlette = ">=0.27"
+uvicorn = {version = ">=0.23.1", markers = "sys_platform != \"emscripten\""}
+
+[package.extras]
+cli = ["python-dotenv (>=1.0.0)", "typer (>=0.12.4)"]
+rich = ["rich (>=13.9.4)"]
+ws = ["websockets (>=15.0.1)"]
+
+[[package]]
 name = "multidict"
 version = "6.2.0"
 description = "multidict implementation"
@@ -1841,14 +1898,14 @@ files = [
 
 [[package]]
 name = "openai"
-version = "1.69.0"
+version = "1.82.1"
 description = "The official Python library for the openai API"
 optional = false
 python-versions = ">=3.8"
 groups = ["main"]
 files = [
-    {file = "openai-1.69.0-py3-none-any.whl", hash = "sha256:73c4b2ddfd050060f8d93c70367189bd891e70a5adb6d69c04c3571f4fea5627"},
-    {file = "openai-1.69.0.tar.gz", hash = "sha256:7b8a10a8ff77e1ae827e5e4c8480410af2070fb68bc973d6c994cf8218f1f98d"},
+    {file = "openai-1.82.1-py3-none-any.whl", hash = "sha256:334eb5006edf59aa464c9e932b9d137468d810b2659e5daea9b3a8c39d052395"},
+    {file = "openai-1.82.1.tar.gz", hash = "sha256:ffc529680018e0417acac85f926f92aa0bbcbc26e82e2621087303c66bc7f95d"},
 ]
 
 [package.dependencies]
@@ -1863,8 +1920,34 @@ typing-extensions = ">=4.11,<5"
 
 [package.extras]
 datalib = ["numpy (>=1)", "pandas (>=1.2.3)", "pandas-stubs (>=1.1.0.11)"]
-realtime = ["websockets (>=13,<15)"]
+realtime = ["websockets (>=13,<16)"]
 voice-helpers = ["numpy (>=2.0.2)", "sounddevice (>=0.5.1)"]
+
+[[package]]
+name = "openai-agents"
+version = "0.0.16"
+description = "OpenAI Agents SDK"
+optional = false
+python-versions = ">=3.9"
+groups = ["main"]
+files = [
+    {file = "openai_agents-0.0.16-py3-none-any.whl", hash = "sha256:e2bac96424162247a21d8bb8b3e2c61dc8eb2e795dd03b640cb346b7869578ac"},
+    {file = "openai_agents-0.0.16.tar.gz", hash = "sha256:4f01bf4ae0667bb5836f4425e88ba8c0629fe427a2d0e9dd6a42f5b5a14bf49b"},
+]
+
+[package.dependencies]
+griffe = ">=1.5.6,<2"
+mcp = {version = ">=1.8.0,<2", markers = "python_version >= \"3.10\""}
+openai = ">=1.81.0"
+pydantic = ">=2.10,<3"
+requests = ">=2.0,<3"
+types-requests = ">=2.0,<3"
+typing-extensions = ">=4.12.2,<5"
+
+[package.extras]
+litellm = ["litellm (>=1.67.4.post1,<2)"]
+viz = ["graphviz (>=0.17)"]
+voice = ["numpy (>=2.2.0,<3) ; python_version >= \"3.10\"", "websockets (>=15.0,<16)"]
 
 [[package]]
 name = "orjson"
@@ -2597,6 +2680,30 @@ files = [
 
 [package.dependencies]
 typing-extensions = ">=4.6.0,<4.7.0 || >4.7.0"
+
+[[package]]
+name = "pydantic-settings"
+version = "2.9.1"
+description = "Settings management using Pydantic"
+optional = false
+python-versions = ">=3.9"
+groups = ["main"]
+files = [
+    {file = "pydantic_settings-2.9.1-py3-none-any.whl", hash = "sha256:59b4f431b1defb26fe620c71a7d3968a710d719f5f4cdbbdb7926edeb770f6ef"},
+    {file = "pydantic_settings-2.9.1.tar.gz", hash = "sha256:c509bf79d27563add44e8446233359004ed85066cd096d8b510f715e6ef5d268"},
+]
+
+[package.dependencies]
+pydantic = ">=2.7.0"
+python-dotenv = ">=0.21.0"
+typing-inspection = ">=0.4.0"
+
+[package.extras]
+aws-secrets-manager = ["boto3 (>=1.35.0)", "boto3-stubs[secretsmanager]"]
+azure-key-vault = ["azure-identity (>=1.16.0)", "azure-keyvault-secrets (>=4.8.0)"]
+gcp-secret-manager = ["google-cloud-secret-manager (>=2.23.1)"]
+toml = ["tomli (>=2.0.1)"]
+yaml = ["pyyaml (>=6.0.1)"]
 
 [[package]]
 name = "pydeck"
@@ -3386,6 +3493,27 @@ files = [
 ]
 
 [[package]]
+name = "sse-starlette"
+version = "2.3.6"
+description = "SSE plugin for Starlette"
+optional = false
+python-versions = ">=3.9"
+groups = ["main"]
+files = [
+    {file = "sse_starlette-2.3.6-py3-none-any.whl", hash = "sha256:d49a8285b182f6e2228e2609c350398b2ca2c36216c2675d875f81e93548f760"},
+    {file = "sse_starlette-2.3.6.tar.gz", hash = "sha256:0382336f7d4ec30160cf9ca0518962905e1b69b72d6c1c995131e0a703b436e3"},
+]
+
+[package.dependencies]
+anyio = ">=4.7.0"
+
+[package.extras]
+daphne = ["daphne (>=4.2.0)"]
+examples = ["aiosqlite (>=0.21.0)", "fastapi (>=0.115.12)", "sqlalchemy[asyncio,examples] (>=2.0.41)", "starlette (>=0.41.3)", "uvicorn (>=0.34.0)"]
+granian = ["granian (>=2.3.1)"]
+uvicorn = ["uvicorn (>=0.34.0)"]
+
+[[package]]
 name = "stack-data"
 version = "0.6.3"
 description = "Extract data from python stack frames and tracebacks for informative displays"
@@ -3728,6 +3856,21 @@ typing_extensions = ">=4.10.0"
 [package.extras]
 doc = ["Sphinx (>=7)", "packaging", "sphinx-autodoc-typehints (>=1.2.0)", "sphinx-rtd-theme (>=1.3.0)"]
 test = ["coverage[toml] (>=7)", "mypy (>=1.2.0) ; platform_python_implementation != \"PyPy\"", "pytest (>=7)"]
+
+[[package]]
+name = "types-requests"
+version = "2.32.0.20250602"
+description = "Typing stubs for requests"
+optional = false
+python-versions = ">=3.9"
+groups = ["main"]
+files = [
+    {file = "types_requests-2.32.0.20250602-py3-none-any.whl", hash = "sha256:f4f335f87779b47ce10b8b8597b409130299f6971ead27fead4fe7ba6ea3e726"},
+    {file = "types_requests-2.32.0.20250602.tar.gz", hash = "sha256:ee603aeefec42051195ae62ca7667cd909a2f8128fdf8aad9e8a5219ecfab3bf"},
+]
+
+[package.dependencies]
+urllib3 = ">=2"
 
 [[package]]
 name = "typing-extensions"
